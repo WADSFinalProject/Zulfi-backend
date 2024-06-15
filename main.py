@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends
 from pydantic import BaseModel
 from random import randint
+from .firebaseAPI import firebaseAPIObject
 from . import models
 from .database import engine, get_db
 from sqlalchemy.orm import Session
@@ -9,20 +10,27 @@ from fastapi.middleware.cors import CORSMiddleware
 # Users
 
 class User(BaseModel):
-    name: str
+    email: str
     password: str
+    name: str
     role: str
     dateOfBirth: str 
 
 class UpdateUser(BaseModel):
-    name: str
-    password: str
-    role: str
-    dateOfBirth: str 
     email: str
-
+    password: str
+    name: str
+    role: str
+    dateOfBirth: str
+    phoneNumber: int
+    gender: str
+    sessionKey: str
+    pending: bool
+    languange: str
+    
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
+firebase = firebaseAPIObject()
 
 origins = [
     "http://localhost",
@@ -37,18 +45,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Create a new ID
-def getNewID(baseUser):
-    newNumber = randint(1, 10000)
-    check = False
-    for x in baseUser:
-        if x['id'] == newNumber:
-           check = True  
-    if check == True:
-        return getNewID(baseUser)
-    else:
-        return newNumber 
     
 # Create a new Email
 def getNewEmail(baseUser, username):
@@ -80,9 +76,14 @@ def get_user(id: int, db: Session = Depends(get_db)):
 @app.post("/users", status_code=status.HTTP_201_CREATED)
 def add_user(data: User, db: Session = Depends(get_db)):
     userDict = data.model_dump()
-    userAll = db.query(models.User).all()
-    userDict['email'] = getNewEmail(userAll, userDict['name'])
+    firebase.createAuth(userDict["email"], userDict.pop("password"))
 
+    userDict["phoneNumber"] = None
+    userDict["gender"] = None
+    userDict["sessionKey"] = None
+    userDict["pending"] = True
+    userDict["languange"] = "English"
+    
     newUser = models.User(**userDict)
     db.add(newUser)
     db.commit()
@@ -100,7 +101,7 @@ def delete_user(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @app.put("/users/{id}")
-def update_user(id: int, user: UpdateUser,  db: Session = Depends(get_db)):
+def update_user(id: int, user: User,  db: Session = Depends(get_db)):
     getUser = db.query(models.User).filter(models.User.id == id)
     selectedUser = getUser.first()
     if selectedUser == None:

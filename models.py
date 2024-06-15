@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 
 class User(Base):
     __tablename__ = "Users"
-    idUser = Column(String, primary_key=True, nullable=False)
+    idUser = Column(Integer, primary_key=True, nullable=False)
     email = Column(String, nullable=False)
     name = Column(String, nullable=False)
     role = Column(String, nullable=False)
@@ -18,7 +18,7 @@ class User(Base):
 
 class Notification(Base):
     __tablename__ = "Notification"
-    idNotification = Column(String, nullable=False)
+    idNotification = Column(Integer, primary_key=True, nullable=False)
     idUser = Column(String, nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
@@ -27,7 +27,7 @@ class Notification(Base):
 
 class Centra(Base):
     __tablename__ = "Centra"
-    idCentra = Column(String, primary_key=True, nullable=False)
+    idCentra = Column(Integer, primary_key=True, nullable=False)
     manager = Column(String, nullable=False)
     phone = Column(Integer, nullable=False)
     location = Column(String, nullable=False)
@@ -37,7 +37,7 @@ class Centra(Base):
 
 class WetLeaves(Base):
     __tablename__ = "WetLeaves"
-    idWet = Column(String, primary_key=True, nullable=False)
+    idWet = Column(Integer, primary_key=True, nullable=False)
     idCentra = Column(String, nullable=False)
     expired = Column(Boolean, nullable=False)
     weight = Column(Integer, nullable=False)
@@ -46,7 +46,7 @@ class WetLeaves(Base):
 
 class DryLeaves(Base):
     __tablename__ = "DryLeaves"
-    idDry = Column(String, primary_key=True ,nullable=False)
+    idDry = Column(Integer, primary_key=True ,nullable=False)
     idCentra = Column(String, nullable=False)
     idMachine = Column(String, nullable=False)
     weight = Column(Integer, nullable=False)
@@ -55,7 +55,7 @@ class DryLeaves(Base):
 
 class Flour(Base):
     __tablename__ = "Flour"
-    idFlour = Column(String, primary_key=True, nullable=False)
+    idFlour = Column(Integer, primary_key=True, nullable=False)
     idCentra = Column(String, nullable=False)
     idMachine = Column(String, nullable=False)
     weight = Column(Integer, nullable=False)
@@ -64,7 +64,7 @@ class Flour(Base):
 
 class Shipment(Base):
     __tablename__ = "Shipments"
-    idShipment = Column(String, primary_key=True, nullable=False)
+    idShipment = Column(Integer, primary_key=True, nullable=False)
     idCentra = Column(String, nullable=False)
     idBatch = Column(String, nullable=False)
     orderNumber = Column(String, nullable=False)
@@ -79,7 +79,7 @@ class Shipment(Base):
 
 class Storage(Base):
     __tablename__ = "Storage"
-    idStorage = Column(String, primary_key=True, nullable=False)
+    idStorage = Column(Integer, primary_key=True, nullable=False)
     idBatch = Column(String, nullable=False)
     provider = Column(String, nullable=False)
     weight = Column(Integer, nullable=False)
