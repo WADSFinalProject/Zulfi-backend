@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends
+from fastapi import FastAPI, Response, status, HTTPException, Depends, Cookie
 from pydantic import BaseModel
 from random import randint
 from .firebaseAPI import firebaseAPIObject
@@ -46,6 +46,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def setting(response: Response, refreshToken, sessionToken):
+    response.set_cookie(key= refreshToken, value= sessionToken, httponly=True)
+    return True
+
+def reading(refresh_token = Cookie(None)):
+    return refresh_token
     
 # Create a new Email
 def getNewEmail(baseUser, username):
@@ -78,6 +85,7 @@ def get_user(id: int, db: Session = Depends(get_db)):
 def add_user(data: User, db: Session = Depends(get_db)):
     userDict = data.model_dump()
     user = firebase.createAuth(userDict["email"], userDict.pop("password"))
+    print(user)
 
     userDict["phoneNumber"] = None
     userDict["gender"] = None

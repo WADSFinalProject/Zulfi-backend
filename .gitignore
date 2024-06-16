@@ -6,3 +6,6 @@ firebaseAPI.py
 
 # ignore the pycache folder
 __pycache__/
+
+# ignore database.py
+database.py
