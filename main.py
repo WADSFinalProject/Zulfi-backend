@@ -372,7 +372,7 @@ class Storage(BaseModel):
 @app.get("/storages", tags=["Storages"])
 def get_all_storages(db: Session = Depends(get_db)):
     storageAll = db.query(models.Storage).all()
-    return {storageAll}
+    return {"task": storageAll}
 
 @app.get("/storages/{id}", tags=["Storages"])
 def get_storage(id: int, db: Session = Depends(get_db)):
