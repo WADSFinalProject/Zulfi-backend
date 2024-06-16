@@ -331,7 +331,7 @@ class Shipment(BaseModel):
 @app.get("/shipments", tags=["Shipments"])
 def get_all_shipments(db: Session = Depends(get_db)):
     shipmentAll = db.query(models.Shipment).all()
-    return {"all_shipment": shipmentAll}
+    return {shipmentAll}
 
 @app.post("/shipments", status_code=status.HTTP_201_CREATED, tags=["Shipments"])
 def add_shipment(data: Shipment, db: Session = Depends(get_db)):
@@ -341,7 +341,7 @@ def add_shipment(data: Shipment, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(newShipment)
 
-    return {"Shipment has been added" : newShipment}
+    return {newShipment}
 
 @app.delete("/shipments/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Shipments"])
 def delete_shipment(id: int, db: Session = Depends(get_db)):
@@ -361,7 +361,7 @@ def update_shipment(id: int, shipment: Shipment,  db: Session = Depends(get_db))
     getShipment.update(shipment.model_dump(), synchronize_session=False)
 
     db.commit()
-    return {"Updated Shipment" : getShipment.first()}
+    return {getShipment.first()}
 
 # Storage
 
@@ -378,14 +378,14 @@ class Storage(BaseModel):
 @app.get("/storages", tags=["Storages"])
 def get_all_storages(db: Session = Depends(get_db)):
     storageAll = db.query(models.Storage).all()
-    return {"all_storage": storageAll}
+    return {storageAll}
 
 @app.get("/storages/{id}", tags=["Storages"])
 def get_storage(id: int, db: Session = Depends(get_db)):
     storage = db.query(models.Storage).filter(models.Storage.id == id).first()
     if storage == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"storage with id: {id} was not found")
-    return {"storage": storage}
+    return {storage}
 
 @app.post("/storages", status_code=status.HTTP_201_CREATED, tags=["Storages"])
 def add_storage(data: Storage, db: Session = Depends(get_db)):
@@ -395,7 +395,7 @@ def add_storage(data: Storage, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(newStorage)
 
-    return {"Storage has been added" : newStorage}
+    return {newStorage}
 
 @app.delete("/storages/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Storages"])
 def delete_storage(id: int, db: Session = Depends(get_db)):
@@ -415,4 +415,4 @@ def update_storage(id: int, storage: Storage,  db: Session = Depends(get_db)):
     getStorage.update(storage.model_dump(), synchronize_session=False)
 
     db.commit()
-    return {"Updated Storage" : getStorage.first()}
+    return {getStorage.first()}
