@@ -354,7 +354,7 @@ def delete_shipment(id: int, db: Session = Depends(get_db)):
 
 @app.put("/shipments/{id}", tags=["Shipments"])
 def update_shipment(id: int, shipment: Shipment,  db: Session = Depends(get_db)):
-    getShipment = db.query(models.Shipment).filter(models.Shipment.id == id)
+    getShipment = db.query(models.Shipment).filter(models.Shipment.idShipment == id)
     selectedShipment = getShipment.first()
     if selectedShipment == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"shipment with id: {id} was not found")
