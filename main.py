@@ -367,7 +367,6 @@ class Storage(BaseModel):
     isRescaled: bool
     rescaledDate: datetime.datetime
     expiredDate: datetime.datetime
-    timeCreated: datetime.datetime
 
 @app.get("/storages", tags=["Storages"])
 def get_all_storages(db: Session = Depends(get_db)):
