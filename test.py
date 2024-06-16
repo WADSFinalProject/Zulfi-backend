@@ -27,3 +27,4 @@ def getNewEmail(baseUser, username):
         return getNewEmail(baseUser, formattedUsername)
     else:
         return newEmail
+    

@@ -1,7 +1,10 @@
+import firebase_admin.auth
 import pyrebase
+import firebase_admin
+
 class firebaseAPIObject():
   def __init__(self):
-     # Standard Config
+     # Standard Config for Pyrebase
     self.config = {
       "apiKey": "AIzaSyAiRAbssdrEqgXOWu6PnkdTZxIiomWsB-Q",
       "authDomain": "moringa-39e76.firebaseapp.com",
@@ -11,6 +14,10 @@ class firebaseAPIObject():
     # Init Pyrebase
     self.firebase = pyrebase.initialize_app(self.config)
     self.auth = self.firebase.auth()
+
+    # Creds for Firebase Admin
+    self.creds = firebase_admin.credentials.Certificate('moringa-39e76-firebase-adminsdk-3xdw4-b741d945f3.json')
+    self.firebaseAdmin = firebase_admin.initialize_app(self.creds)
 
   # Main function to Auth
   def createAuth(self, email, password):
@@ -35,3 +42,10 @@ class firebaseAPIObject():
     info = self.auth.get_account_info(idToken)
     return info
   
+  def setSessions(self, idToken):
+    sessionToken = firebase_admin.auth.create_session_cookie(id_token=idToken)
+    return sessionToken
+  
+  def verifySession(self, sessionCookie):
+    verifiedUser = firebase_admin.auth.verify_session_cookie(session_cookie=sessionCookie)
+    print(verifiedUser)

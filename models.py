@@ -19,7 +19,7 @@ class User(Base):
 class Notification(Base):
     __tablename__ = "Notification"
     idNotification = Column(Integer, primary_key=True, nullable=False)
-    idUser = Column(String, nullable=False)
+    idUser = Column(Integer, nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     seen = Column(Boolean, nullable=False)
@@ -38,7 +38,7 @@ class Centra(Base):
 class WetLeaves(Base):
     __tablename__ = "WetLeaves"
     idWet = Column(Integer, primary_key=True, nullable=False)
-    idCentra = Column(String, nullable=False)
+    idCentra = Column(Integer, nullable=False)
     expired = Column(Boolean, nullable=False)
     weight = Column(Integer, nullable=False)
     timeToExpired = Column(DateTime, nullable=False)
@@ -47,8 +47,8 @@ class WetLeaves(Base):
 class DryLeaves(Base):
     __tablename__ = "DryLeaves"
     idDry = Column(Integer, primary_key=True ,nullable=False)
-    idCentra = Column(String, nullable=False)
-    idMachine = Column(String, nullable=False)
+    idCentra = Column(Integer, nullable=False)
+    idMachine = Column(Integer, nullable=False)
     weight = Column(Integer, nullable=False)
     timeToExpired = Column(DateTime, nullable=False)
     timeCreated = Column(DateTime(timezone=True), server_default=func.now())
@@ -56,8 +56,8 @@ class DryLeaves(Base):
 class Flour(Base):
     __tablename__ = "Flour"
     idFlour = Column(Integer, primary_key=True, nullable=False)
-    idCentra = Column(String, nullable=False)
-    idMachine = Column(String, nullable=False)
+    idCentra = Column(Integer, nullable=False)
+    idMachine = Column(Integer, nullable=False)
     weight = Column(Integer, nullable=False)
     timeToExpired = Column(DateTime, nullable=False)
     timeCreated = Column(DateTime(timezone=True), server_default=func.now())
@@ -65,14 +65,13 @@ class Flour(Base):
 class Shipment(Base):
     __tablename__ = "Shipments"
     idShipment = Column(Integer, primary_key=True, nullable=False)
-    idCentra = Column(String, nullable=False)
-    idBatch = Column(String, nullable=False)
+    idCentra = Column(Integer, nullable=False)
     orderNumber = Column(String, nullable=False)
     address = Column(String, nullable=False)
     status = Column(String, nullable=False)
     weight = Column(String, nullable=False)
     provider = Column(String, nullable=False)
-    estimated = Column(String, nullable=False)
+    estimated = Column(DateTime, nullable=False)
     orderDetails = Column(String, nullable=False)
     stage = Column(Integer, nullable=False)
     timeCreated = Column(DateTime(timezone=True), server_default=func.now())
@@ -80,7 +79,7 @@ class Shipment(Base):
 class Storage(Base):
     __tablename__ = "Storage"
     idStorage = Column(Integer, primary_key=True, nullable=False)
-    idBatch = Column(String, nullable=False)
+    idShipment = Column(Integer, nullable=False)
     provider = Column(String, nullable=False)
     weight = Column(Integer, nullable=False)
     arrival = Column(DateTime, nullable=True)
