@@ -3,3 +3,6 @@ moringa-39e76-firebase-adminsdk-3xdw4-b741d945f3.json
 
 # ignore firebase API
 firebaseAPI.py
+
+# ignore the pycache folder
+__pycache__/
