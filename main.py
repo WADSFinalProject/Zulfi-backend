@@ -33,12 +33,6 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 firebase = firebaseAPIObject()
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:8000"
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
