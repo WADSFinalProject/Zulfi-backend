@@ -462,7 +462,7 @@ def get_all_storages(db: Session = Depends(get_db)):
 
 @app.get("/storages/{id}", tags=["Storages"])
 def get_storage(id: int, db: Session = Depends(get_db)):
-    storage = db.query(models.Storage).filter(models.Storage.id == id).first()
+    storage = db.query(models.Storage).filter(models.Storage.idStorage == id).first()
     if storage == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"storage with id: {id} was not found")
     return {"storage": storage}
@@ -488,7 +488,7 @@ def delete_storage(id: int, db: Session = Depends(get_db)):
 
 @app.put("/storages/{id}", tags=["Storages"])
 def update_storage(id: int, storage: Storage,  db: Session = Depends(get_db)):
-    getStorage = db.query(models.Storage).filter(models.Storage.id == id)
+    getStorage = db.query(models.Storage).filter(models.Storage.idStorage == id)
     selectedStorage = getStorage.first()
     if selectedStorage == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"storage with id: {id} was not found")
