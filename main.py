@@ -7,6 +7,7 @@ from .database import engine, get_db
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import datetime
+from typing import Optional
 
 # Users
 
@@ -368,6 +369,10 @@ class Storage(BaseModel):
     rescaledDate: datetime.datetime
     expiredDate: datetime.datetime
 
+class StorageWeightUpdate(BaseModel):
+    weight: int
+    isRescaled: Optional[bool] = True
+
 @app.get("/storages", tags=["Storages"])
 def get_all_storages(db: Session = Depends(get_db)):
     storageAll = db.query(models.Storage).all()
@@ -399,13 +404,20 @@ def delete_storage(id: int, db: Session = Depends(get_db)):
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@app.put("/storages/{id}", tags=["Storages"])
-def update_storage(id: int, storage: Storage,  db: Session = Depends(get_db)):
-    getStorage = db.query(models.Storage).filter(models.Storage.idStorage == id)
-    selectedStorage = getStorage.first()
-    if selectedStorage == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"storage with id: {id} was not found")
-    getStorage.update(storage.model_dump(), synchronize_session=False)
 
+@app.put("/storages/put/{id}", tags=["Storages"])
+def update_storage_weight(id: int, storage: StorageWeightUpdate, db: Session = Depends(get_db)):
+    selected_storage = db.query(models.Storage).filter(models.Storage.idStorage == id).first()
+    if selected_storage is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Storage with id: {id} was not found")
+
+    # Update weight and isRescaled
+    db.query(models.Storage).filter(models.Storage.idStorage == id).update({
+        "weight": storage.weight,
+        "isRescaled": True
+    }, synchronize_session=False)
     db.commit()
-    return {"Updated Storage" : getStorage.first()}
+
+    # Fetch and return the updated storage
+    updated_storage = db.query(models.Storage).filter(models.Storage.idStorage == id).first()
+    return {"Updated Storage": updated_storage}
