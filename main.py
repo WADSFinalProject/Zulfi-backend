@@ -127,7 +127,11 @@ def update_user(id: int, user: User,  db: Session = Depends(get_db)):
 class SessionData(BaseModel):
     username: str
 
-cookie_params = CookieParameters()
+cookie_params = CookieParameters(
+    secure=True,
+    samesite='none'
+)
+
 cookie = SessionCookie(
     cookie_name="cookie",
     identifier="general_verifier",
