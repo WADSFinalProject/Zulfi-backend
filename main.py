@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, Cookie
 from pydantic import BaseModel
 from random import randint
-from .firebaseAPI import firebaseAPIObject
-from . import models
-from .database import engine, get_db
+from firebaseAPI import firebaseAPIObject
+import models
+from database import engine, get_db
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import datetime
