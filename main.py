@@ -452,7 +452,7 @@ class Storage(BaseModel):
     provider: str
     weight: int
     arrival: datetime.datetime
-    isRescaled: bool
+    isRescaled: bool = False
     rescaledDate: datetime.datetime
     expiredDate: datetime.datetime
 
