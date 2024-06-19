@@ -27,16 +27,15 @@ class User(BaseModel):
     dateOfBirth: str 
 
 class UpdateUser(BaseModel):
-    email: str
-    password: str
-    name: str
-    role: str
-    dateOfBirth: str
-    phoneNumber: int
-    gender: str
-    sessionKey: str
-    pending: bool
-    languange: str
+    email: Optional[str]
+    name: Optional[str]
+    role: Optional[str]
+    dateOfBirth: Optional[str]
+    phoneNumber: Optional[int]
+    sessionKey: Optional[str]
+    gender: Optional[str]
+    pending: Optional[bool]
+    languange: Optional[str]
 
 class LogInUser(BaseModel):
     email: str
@@ -128,7 +127,8 @@ def delete_user(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @app.put("/users/{id}", tags=["Users"])
-def update_user(id: int, user: User,  db: Session = Depends(get_db)):
+def update_user(id: int, user: UpdateUser,  db: Session = Depends(get_db)):
+    print(user)
     getUser = db.query(models.User).filter(models.User.idUser == id)
     selectedUser = getUser.first()
     if selectedUser == None:
@@ -137,6 +137,22 @@ def update_user(id: int, user: User,  db: Session = Depends(get_db)):
 
     db.commit()
     return {"Updated User" : getUser.first()}
+
+class PendingUser(BaseModel):
+    pending: bool
+
+@app.put("/users/pending/{id}", tags=["Users"])
+def update_user(id: int, user: PendingUser,  db: Session = Depends(get_db)):
+    print(user)
+    getUser = db.query(models.User).filter(models.User.idUser == id)
+    selectedUser = getUser.first()
+    if selectedUser == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"user with id: {id} was not found")
+    getUser.update(user.model_dump(), synchronize_session=False)
+
+    db.commit()
+    return {"Updated User" : getUser.first()}
+
 
 @app.post("/logins", status_code=status.HTTP_200_OK, tags=["Users"])
 def add_user(data: LogInUser, db: Session = Depends(get_db)):
