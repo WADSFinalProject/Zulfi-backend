@@ -34,11 +34,6 @@ class UpdateUser(BaseModel):
     name: Optional[str]
     role: Optional[str]
     dateOfBirth: Optional[str]
-    phoneNumber: Optional[int]
-    sessionKey: Optional[str]
-    gender: Optional[str]
-    pending: Optional[bool]
-    languange: Optional[str]
 
 class LogInUser(BaseModel):
     email: str
@@ -53,7 +48,7 @@ firebase = firebaseAPIObject()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:8000"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000", "https://test-backend-k9s7.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -174,8 +169,9 @@ class SessionData(BaseModel):
     username: str
 
 cookie_params = CookieParameters(
-    secure=True,
-    samesite='none'
+    secure=False,
+    httponly=True,
+    samesite= 'none'
 )
 
 cookie = SessionCookie(
