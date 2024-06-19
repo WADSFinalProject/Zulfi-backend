@@ -37,6 +37,13 @@ class UpdateUser(BaseModel):
     sessionKey: str
     pending: bool
     languange: str
+
+class LogInUser(BaseModel):
+    email: str
+    password: str
+
+class EmailUser(BaseModel):
+    email: str
     
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -44,7 +51,7 @@ firebase = firebaseAPIObject()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -82,6 +89,14 @@ def get_user(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.idUser == id).first()
     if user == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"user with id: {id} was not found")
+    return {"user": user}
+
+@app.post("/users/email/", tags=["Users"] )
+def get_user(data: EmailUser, db: Session = Depends(get_db)):
+    dataDict = data.model_dump()
+    user = db.query(models.User).filter(models.User.email == dataDict['email']).first()
+    if user == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"user with email: {dataDict['email']} was not found")
     return {"user": user}
 
 @app.post("/users", status_code=status.HTTP_201_CREATED, tags=["Users"])
@@ -122,6 +137,17 @@ def update_user(id: int, user: User,  db: Session = Depends(get_db)):
 
     db.commit()
     return {"Updated User" : getUser.first()}
+
+@app.post("/logins", status_code=status.HTTP_200_OK, tags=["Users"])
+def add_user(data: LogInUser, db: Session = Depends(get_db)):
+    stuff = data.model_dump()
+    user = firebase.signIn(stuff['email'], stuff['password'])
+    if user == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= "user was not found")
+    return {
+            "User has been auth" : user['email'],
+            "registered": user['registered'] 
+            }
 
 # Sessions
 
@@ -196,7 +222,7 @@ async def create_session(name: str, response: Response):
 
     return f"created session for {name}"
 
-@app.get("/whoami", dependencies=[Depends(cookie)], tags=["Sessions"])
+@app.post("/whoami", dependencies=[Depends(cookie)], tags=["Sessions"])
 async def whoami(session_data: SessionData = Depends(verifier)):
     return session_data
 
