@@ -17,6 +17,9 @@ from fastapi import FastAPI, Response
 from fastapi import Depends
 from typing import Optional
 
+# Rest of the code...
+
+
 # Users
 
 class User(BaseModel):
@@ -554,3 +557,7 @@ def update_storage_weight(id: int, storage: StorageWeightUpdate, db: Session = D
     # Fetch and return the updated storage
     updated_storage = db.query(models.Storage).filter(models.Storage.idStorage == id).first()
     return {"Updated Storage": updated_storage}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8001, reload=True)
