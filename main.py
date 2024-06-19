@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, Cookie
 from pydantic import BaseModel
 from random import randint
-from .firebaseAPI import firebaseAPIObject
-from . import models
-from .database import engine, get_db
+from firebaseAPI import firebaseAPIObject
+from backend import models
+from backend.database import engine, get_db
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import datetime
@@ -16,6 +16,9 @@ from uuid import uuid4
 from fastapi import FastAPI, Response
 from fastapi import Depends
 from typing import Optional
+
+# Rest of the code...
+
 
 # Users
 
@@ -508,3 +511,7 @@ def update_storage_weight(id: int, storage: StorageWeightUpdate, db: Session = D
     # Fetch and return the updated storage
     updated_storage = db.query(models.Storage).filter(models.Storage.idStorage == id).first()
     return {"Updated Storage": updated_storage}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8001, reload=True)
