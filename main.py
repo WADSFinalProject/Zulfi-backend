@@ -269,7 +269,8 @@ def get_notification(id: int, db: Session = Depends(get_db)):
 @app.post("/notifications", status_code=status.HTTP_201_CREATED, tags=["Notifications"])
 def add_notification(data: Notification, db: Session = Depends(get_db)):
     NotifDict = data.model_dump()
-    newNotif = models.Notification(*NotifDict)
+    print(NotifDict)
+    newNotif = models.Notification(**NotifDict)
     db.add(newNotif)
     db.commit()
     db.refresh(newNotif)
